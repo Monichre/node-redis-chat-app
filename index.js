@@ -53,3 +53,54 @@ fs.readFile('credentials/credentials.json', 'utf-8', function(err, data) {
 app.get('/', function(req, res) {
     res.send("Home page muthaaa fuckahhhh");
 });
+
+// Joining the Chat Room
+app.post('/join', function(req, res) {
+    var username = req.body.username;
+    if (chatters.indexOf(username) === -1) {
+        chatters.push(username);
+        client.set('chat_users', JSON.stringify(chatters));
+        res.send({
+            'chatters': chatters,
+            'status': 'Ok'
+        });
+    } else {
+        res.send({
+            'status': "Failed"
+        });
+    }
+});
+
+// Leaving the Chat Room
+app.post('/leave', function(req, res) {
+    var username = req.body.username;
+    chatters.splice(chatters.indexOf(username), 1);
+    client.set('chat_users', JSON.stringify(chatters));
+    res.send({
+        'status': 'Ok'
+    });
+});
+
+// Sending and Storing Chat Messages
+app.post('/send_message', function(req, res) {
+    var username = req.body.username;
+    var message = req.body.message;
+    chat_messages.push({
+        'sender': username,
+        'message': message
+    });
+    client.set('chat_app_messages', JSON.stringify(chat_messages));
+    res.send({
+        'status': 'Ok'
+    });
+});
+
+// Get Messages
+app.get('/get_chatters', function(req, res) {
+    res.send(chat_messages);
+});
+
+// Get All Chat Members
+app.get('/get_chatters', function(req, res) {
+    res.send(chatters);
+});
