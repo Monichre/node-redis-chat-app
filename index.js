@@ -55,6 +55,10 @@ fs.readFile('credentials/credentials.json', 'utf-8', function(err, data) {
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + '/views/index.html'));
 });
+app.get('/chat', function(req, res) {
+    res.sendFile(path.join(__dirname + '/views/chat.html'));
+});
+
 
 // Joining the Chat Room
 app.post('/join', function(req, res) {
@@ -66,6 +70,14 @@ app.post('/join', function(req, res) {
             'chatters': chatters,
             'status': 'Ok'
         });
+
+        // res.redirect('/chat');
+        //
+        // // pass a local variable to the view
+        // res.render('user', { name: 'Tobi' }, function(err, html) {
+        //   // ...
+        // });
+
     } else {
         res.send({
             'status': "Failed"
@@ -98,7 +110,7 @@ app.post('/send_message', function(req, res) {
 });
 
 // Get Messages
-app.get('/get_chatters', function(req, res) {
+app.get('/get_messages', function(req, res) {
     res.send(chat_messages);
 });
 
@@ -109,6 +121,8 @@ app.get('/get_chatters', function(req, res) {
 
 // Socket Connection for Front End UI
 io.on('connection', function(socket) {
+    console.log("Socket Connected");
+
     socket.on('message', function(data) {
         io.emit('send', data);
     });
