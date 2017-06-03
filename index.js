@@ -3,7 +3,7 @@ var bodyParser = require('body-parser');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
-
+var path = require('path');
 var fs = require('fs');
 var creds = '';
 var redis = require('redis');
@@ -11,7 +11,7 @@ var client = '';
 var port = process.env.PORT || 8080;
 
 //Express middleware for serving static files
-app.use(express.static('public'));
+app.use(express.static(__dirname + '/public/'));
 app.use(bodyParser.urlencoded({
     extended: true
 }));
@@ -49,9 +49,11 @@ fs.readFile('credentials/credentials.json', 'utf-8', function(err, data) {
     });
 });
 
-// Routes
+// ROUTES
+// ================================================ **
+
 app.get('/', function(req, res) {
-    res.send("Home page muthaaa fuckahhhh");
+    res.sendFile(path.join(__dirname + '/views/index.html'));
 });
 
 // Joining the Chat Room
@@ -103,4 +105,15 @@ app.get('/get_chatters', function(req, res) {
 // Get All Chat Members
 app.get('/get_chatters', function(req, res) {
     res.send(chatters);
+});
+
+// Socket Connection for Front End UI
+io.on('connection', function(socket) {
+    socket.on('message', function(data) {
+        io.emit('send', data);
+    });
+
+    socket.on('update_chatter_count', function(data) {
+        io.emit('count_chatters', data);
+    });
 });
