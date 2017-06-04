@@ -82,9 +82,11 @@ app.post('/join', function(req, res) {
 app.post('/leave', function(req, res) {
     var username = req.body.username;
     chatters.splice(chatters.indexOf(username), 1);
+    console.log(chatters);
     client.set('chat_users', JSON.stringify(chatters));
     res.send({
-        'status': 'Ok'
+        'status': 'Ok',
+        'chatters': chatters,
     });
 });
 
