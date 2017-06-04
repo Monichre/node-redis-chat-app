@@ -4,14 +4,19 @@ $(function(){
 
     // Ajax Events for Front End UI
     $.get('/get_chatters', function(response) {
-        $('.chat-info').append("<div class='col s12 animated slideInRight'> <div class='card-panel grey lighten-2 z-depth-5'>" +
+        console.log(response);
+        $('.chat-info').append("<div class='col s12 animated slideInRight'> <div class='card-panel red z-depth-5'>" +
                 "<div class='row valign-wrapper'>" +
-                    "<div class=''><i class='small material-icons'>perm_identity</i></div>" +
-                    "<div class=''><span class='black-text'>" + 'There are currently ' + response.length + ' people in the chat room' + "</span></div>" +
+                    "<div class=''><i class='small material-icons white-text circle'>perm_identity</i></div>" +
+                    "<div class=''><span class='white-text'>" + 'There are currently ' + response.length + ' people in the chat room' + "</span></div>" +
                 "</div>" +
                 "</div>" +
                 "</div>");
         chatter_count = response.length;
+        var chatters = response;
+        chatters.forEach(function(chatter) {
+            $('.friends').append("<a href='#'><div class='chip red z-depth-5 white-text'><i class='small material-icons white-text circle'>perm_identity</i>" + chatter +  "</div></a>");
+        });
     });
 
     // Joining the Chatroom
@@ -122,7 +127,15 @@ $(function(){
         var username = data.username;
         var message = data.message;
         console.log(data);
-        var html = "<div class='message'><div class='chip'><i class='small material-icons'>perm_identity</i> <span class='username-title'>" + username + "</span></div>" + "" + message + "</div>";
+
+        var html = "<li class='collection-item avatar message'>" +
+            "<i class='small material-icons circle blue'>perm_identity</i>" +
+            "<span class='title'>" + username + "</span> <br>" +
+            "<p>" + message + "</p> <a href='#' class='secondary-content'><i class='material-icons'>grade</i></a></li>";
+
+
+
+
         $('.messages').append(html);
     });
     socket.on('count_chatters', function(data) {
@@ -131,10 +144,10 @@ $(function(){
         } else {
             chatter_count--;
         }
-        $('.chat-info').append("<div class='col s12 animated slideInRight'> <div class='card-panel grey lighten-2 z-depth-5'>" +
+        $('.chat-info').append("<div class='col s12 animated slideInRight'> <div class='card-panel red z-depth-5'>" +
                 "<div class='row valign-wrapper'>" +
-                    "<div class=''><i class='small material-icons'>perm_identity</i></div>" +
-                    "<div class=''><span class='black-text'>" + 'There are currently ' + chatter_count + ' people in the chat room' + "</span></div>" +
+                    "<div class=''><i class='small material-icons white-text'>perm_identity</i></div>" +
+                    "<div class=''><span class='white-text'>" + 'There are currently ' + chatter_count + ' people in the chat room' + "</span></div>" +
                 "</div>" +
                 "</div>" +
                 "</div>");
