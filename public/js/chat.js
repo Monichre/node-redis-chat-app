@@ -4,7 +4,13 @@ $(function(){
 
     // Ajax Events for Front End UI
     $.get('/get_chatters', function(response) {
-        $('.chat-info').text('There are currently ' + response.length + ' people in the chat room');
+        $('.chat-info').append("<div class='col s12 animated slideInRight'> <div class='card-panel grey lighten-2 z-depth-5'>" +
+                "<div class='row valign-wrapper'>" +
+                    "<div class=''><i class='small material-icons'>perm_identity</i></div>" +
+                    "<div class=''><span class='black-text'>" + 'There are currently ' + response.length + ' people in the chat room' + "</span></div>" +
+                "</div>" +
+                "</div>" +
+                "</div>");
         chatter_count = response.length;
     });
 
@@ -12,7 +18,7 @@ $(function(){
     $('#join-chat').click(function(e){
         e.preventDefault();
         var username = $('#username').val();
-        console.log(username);
+
         localStorage.setItem('username', username);
 
         $.ajax({
@@ -29,7 +35,7 @@ $(function(){
                     socket.emit('update_chatter_count', {
                         'action': 'increase'
                     });
-                    
+
                     $.get('/get_messages', function(response) {
                         var message_count = response.length;
                         if(message_count > 0) {
@@ -43,7 +49,7 @@ $(function(){
                             $('.messages').append("<h1>There are currently no messages</h1>");
                         }
                     });
-                    $('#join-chat').hide();
+
                 } else if (response.status === 'Failed') {
                     alert("Sorry but that username already exists");
                     $('#username').val('').focus();
@@ -54,5 +60,85 @@ $(function(){
         });
     });
 
+    $('#leave-chat').click(function(){
+        var username = $(this).attr('data-username');
+
+        $.ajax({
+            url: '/leave',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                username: username
+            },
+            success: function(response){
+                if (response.status === "Ok") {
+                    socket.emit('message', {
+                        'username': username,
+                        'message': username + " has left the chat room.."
+                    });
+                    socket.emit('update_chatter_count', {
+                        'action': 'decrease'
+                    });
+                    $('.chat').addClass("animated slideOutDown");
+                    $('.join-chat').addClass("animated fadeInUp");
+                    $('#username').val('');
+                    alert(username + ", you've successfully left the chatroom");
+                }
+            }
+        })
+    });
+
+    $('#send-message').click(function(e){
+        e.preventDefault();
+        var username = $(this).attr('data-username');
+        var message = $('#message').val();
+
+        console.log(message);
+
+        $.ajax({
+            url: '/send_message',
+            type: "POST",
+            dataType: 'json',
+            data: {
+                'username': username,
+                'message': message
+            },
+            success: function(response){
+                if (response.status === "Ok") {
+                    console.log(response);
+                    alert("Post Message Ajax Response Successful");
+                    socket.emit('message', {
+                        'username': username,
+                        'message': message
+                    });
+                $('#message').val('');
+                }
+            }
+        })
+    });
+
+    //This code is Socket.io listening for a socket response on the backend server that it in turn received from our Send Message Click
+    socket.on('send', function(data) {
+        var username = data.username;
+        var message = data.message;
+        console.log(data);
+        var html = "<div class='message'><div class='chip'><i class='small material-icons'>perm_identity</i> <span class='username-title'>" + username + "</span></div>" + "" + message + "</div>";
+        $('.messages').append(html);
+    });
+    socket.on('count_chatters', function(data) {
+        if (data.action === 'increase') {
+            chatter_count++;
+        } else {
+            chatter_count--;
+        }
+        $('.chat-info').append("<div class='col s12 animated slideInRight'> <div class='card-panel grey lighten-2 z-depth-5'>" +
+                "<div class='row valign-wrapper'>" +
+                    "<div class=''><i class='small material-icons'>perm_identity</i></div>" +
+                    "<div class=''><span class='black-text'>" + 'There are currently ' + chatter_count + ' people in the chat room' + "</span></div>" +
+                "</div>" +
+                "</div>" +
+                "</div>");
+
+    });
 
 });
