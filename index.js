@@ -33,6 +33,7 @@ fs.readFile('credentials/credentials.json', 'utf-8', function(err, data) {
     client = redis.createClient('redis://' + creds.user + ':' + creds.password + '@' + creds.host);
 
     client.once('ready', function(){
+        console.log("in the redis client");
         client.flushdb();
 
         client.get('chat_users', function(err, reply) {
