@@ -7,7 +7,7 @@ $(function(){
         console.log(response);
         $('.chat-info').append("<div class='col s12 animated slideInRight'> <div class='card-panel red z-depth-5'>" +
                 "<div class='row valign-wrapper'>" +
-                    "<div class=''><i class='small material-icons white-text circle'>perm_identity</i></div>" +
+                    "<div class=''><i class='small material-icons white-text'>perm_identity</i></div>" +
                     "<div class=''><span class='white-text'>" + 'There are currently ' + response.length + ' people in the chat room' + "</span></div>" +
                 "</div>" +
                 "</div>" +
@@ -34,7 +34,6 @@ $(function(){
             },
             success: function(response) {
                 if(response.status === 'Ok') {
-                    alert("AJAX call successful");
                     console.log(response);
                     window.location = 'http://localhost:8080/chat';
                     socket.emit('update_chatter_count', {
@@ -111,7 +110,7 @@ $(function(){
             success: function(response){
                 if (response.status === "Ok") {
                     console.log(response);
-                    alert("Post Message Ajax Response Successful");
+                    
                     socket.emit('message', {
                         'username': username,
                         'message': message
@@ -128,7 +127,7 @@ $(function(){
         var message = data.message;
         console.log(data);
 
-        var html = "<li class='collection-item avatar message'>" +
+        var html = "<li class='collection-item avatar message animated fadeInUp'>" +
             "<i class='small material-icons circle blue'>perm_identity</i>" +
             "<span class='title'>" + username + "</span> <br>" +
             "<p>" + message + "</p> <a href='#' class='secondary-content'><i class='material-icons'>grade</i></a></li>";
