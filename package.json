@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.17.2",
+    "express": "^4.15.3",
     "expressjs": "^1.0.1",
     "redis": "^2.7.1",
     "redis-serverclient": "^1.0.1",
