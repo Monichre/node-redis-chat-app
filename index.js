@@ -71,14 +71,6 @@ app.post('/join', function(req, res) {
             'chatters': chatters,
             'status': 'Ok'
         });
-
-        // res.redirect('/chat');
-        //
-        // // pass a local variable to the view
-        // res.render('user', { name: 'Tobi' }, function(err, html) {
-        //   // ...
-        // });
-
     } else {
         res.send({
             'status': "Failed"
@@ -113,7 +105,24 @@ app.post('/send_message', function(req, res) {
 // Get Messages
 app.get('/get_messages', function(req, res) {
     res.send(chat_messages);
+    // I want to add this to get the chat page to render properly on the request response and load the appropriate chat data
+
+    // var chatPage = path.join(__dirname + '/views/chat.html');
+    // var data = {
+    //     chat_messages: chat_messages
+    // };
+    //
+    // res.sendFile(chatPage, data, function(err){
+    //     if(err){
+    //         console.log(err);
+    //     } else {
+    //         console.log("Success!");
+    //         console.log(data);
+    //     }
+    // });
 });
+
+
 
 // Get All Chat Members
 app.get('/get_chatters', function(req, res) {

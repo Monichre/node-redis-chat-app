@@ -137,6 +137,27 @@
                     dataSendMessage.setAttribute('data-username', username);
                     console.log(dataLeave.getAttribute('data-username'), dataSendMessage.getAttribute('data-username'));
                 }
+                $.get('/get_messages', function(response) {
+                    console.log("getting messages!");
+                    console.log(response);
+                    var message_count = response.length;
+
+                    if(message_count > 0) {
+                        var html = '';
+                        for(var x = 0; x < message_count; x ++){
+                            html += "<div class='message'><span class='username-title'></span>" + response[x] + "</div>";
+                        }
+                        $('.messages').html(html);
+                    } else if (message_count === 0) {
+                        $('.chat-info').append("<div class='col s12 animated slideInRight'> <div class='card-panel red z-depth-5'>" +
+                                "<div class='row valign-wrapper'>" +
+                                    "<div class=''><i class='small material-icons white-text'>perm_identity</i></div>" +
+                                    "<div class=''><span class='white-text'>" + 'There are currently ' + chatter_count + ' people in the chat room' + "</span></div>" +
+                                "</div>" +
+                                "</div>" +
+                                "</div>");
+                    }
+                });
             });
         </script>
 
